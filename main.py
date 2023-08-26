@@ -30,17 +30,6 @@ async def on_ready():
     print("Develop By ZeroCool")
     print("-------------------")
 
-
-@bot.command()
-async def capture_messages(ctx, start_date, end_date):
-    # Convert the input strings to datetime objects (you might need to adjust the format)
-    start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
-    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
-
-    channel = ctx.channel
-    
-    await ctx.send(f"Captured messages:\n{captured_messages}")
-
 @bot.command()
 async def lmchr(ctx, *args):
     subcommand = args[0] if args else None
@@ -240,26 +229,7 @@ async def lmchr(ctx, *args):
                     await message.add_reaction('✅')
     else:
         await ctx.send("Invalid subcommand. Use '!lmchr function1' or '!lmchr function2'.")
-
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
-
-    if message.content.startswith('!special_command'):
-        await message.channel.send("Special command detected!")
-
-    if bot.user.mentioned_in(message):
-        query = message.content.replace(bot.user.mention, '').strip()
-        response = f"Received query: {query}"
-        await message.channel.send(response)
-
-    await bot.process_commands(message)
         
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot.run(TOKEN)
-
-# 30781696113729
-# Token = MTE0NDgyNTA2MzMxMzUwNjMwNA.G9LCJg.hdWsRsBSNNVQ9ffgmIUvL8p8L4caToGNKVoOZU
-# https://discord.com/api/oauth2/authorize?client_id=1144825063313506304&permissions=30781696113729&scope=bot
