@@ -16,9 +16,9 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='/', intents=intents)
-sent_to_channel = 1145364228404936786
-bandage_channel = 1078715455801409647
-bandage_tajaan_channel = 1103279626773598248
+sent_to_channel = 1145077091986063420
+bandage_channel = 1144826573141315685
+bandage_tajaan_channel = 1145401555126849677
 
 @bot.event
 async def on_ready():
@@ -221,7 +221,7 @@ async def lmchr(ctx, *args):
             channel = bot.get_channel(sent_to_channel)
             total = total_working_salary + total_ot_salary + (total_bandage * 100) + (total_tajaan_bandage * 100)
             if user != '' and position != '': 
-                await channel.send(f"```Name           : {name}\nDate           : {start_date2} - {end_date2}\nPosition       : {position}\nDaily Salary   : RM {locale.format_string('%.2f', total_working_salary, True)}\nOver Time      : RM {locale.format_string('%.2f', total_ot_salary, True)}\nBandage Sale   : RM {locale.format_string('%.2f', (total_bandage * 100), True)} ({total_bandage} Unit)\nBandage Tajaan : RM {locale.format_string('%.2f', (total_tajaan_bandage * 100), True)} ({total_tajaan_bandage} Unit)\n\nTOTAL        : RM {locale.format_string('%.2f', total, True)}```")
+                await channel.send(f"```Name           : {name}\nDate           : {start_date2.split(' ')[0]} - {end_date2.split(' ')[0]}\nPosition       : {position}\nDaily Salary   : RM {locale.format_string('%.2f', total_working_salary, True)}\nOver Time      : RM {locale.format_string('%.2f', total_ot_salary, True)}\nBandage Sale   : RM {locale.format_string('%.2f', (total_bandage * 100), True)} ({total_bandage} Unit)\nBandage Tajaan : RM {locale.format_string('%.2f', (total_tajaan_bandage * 100), True)} ({total_tajaan_bandage} Unit)\n\nTOTAL          : RM {locale.format_string('%.2f', total, True)}```")
             await ctx.message.delete()
             await reply.delete()
         else :
