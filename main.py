@@ -35,6 +35,7 @@ async def on_ready():
 async def lmchr(ctx, *args):
     subcommand = args[0] if args else None
     
+    # command : /lmchr calculate_salary 2023-08-23 2023-08-27
     if subcommand == 'calculate_salary':
         if len(args) >= 3:
             reply = await ctx.reply("Processing Salary Calculation. Please wait .....")
@@ -233,3 +234,5 @@ async def lmchr(ctx, *args):
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot.run(TOKEN)
+
+# url : https://discord.com/api/oauth2/authorize?client_id=1144825063313506304&permissions=30781696113729&scope=bot
