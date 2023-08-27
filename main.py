@@ -16,7 +16,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='/', intents=intents)
-target_channel_id = 1145077091986063420
+sent_to_channel = 1145077091986063420
+bandage_channel = 1144826573141315685
 
 @bot.event
 async def on_ready():
@@ -36,11 +37,12 @@ async def lmchr(ctx, *args):
     
     if subcommand == 'calculate_salary':
         if len(args) >= 3:
+            reply = await ctx.reply("Processing Salary Calculation. Please wait .....")
             start_date = (args[1] + ' 00:00:00') if args else None
-            end_date   = (args[2] + ' 23:59:00') if args else None
+            end_date   = (args[2] + ' 23:59:59') if args else None
             
             start_date2 = (args[1] + ' 00:00:00') if args else None
-            end_date2   = (args[2] + ' 23:59:00') if args else None
+            end_date2   = (args[2] + ' 23:59:59') if args else None
             
             start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
             end_date   = datetime.datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
@@ -80,7 +82,6 @@ async def lmchr(ctx, *args):
                         
                         data.append(json.dumps(temp))
                      
-
             total_working_salary = 0
             total_ot_salary = 0
             rate = 0
@@ -111,7 +112,7 @@ async def lmchr(ctx, *args):
                         a = punch_card[2].replace('.', ':')
                         clock_in_ot = datetime.datetime.strptime(a, "%I:%M %p")
                         clock_in_ot = clock_out_ot + datetime.timedelta(days=1)
-                        clock_in    = datetime.datetime.strptime('12:59 AM', "%I:%M %p")
+                        clock_in    = datetime.datetime.strptime('01:00 AM', "%I:%M %p")
                         clock_in    = clock_in + datetime.timedelta(days=1)
                     else:
                         a = punch_card[2].replace('.', ':')
@@ -127,7 +128,7 @@ async def lmchr(ctx, *args):
                         a = punch_card[3].replace('.', ':')
                         clock_out_ot = datetime.datetime.strptime(a, "%I:%M %p")
                         clock_out_ot = clock_out_ot + datetime.timedelta(days=1)
-                        clock_out    = datetime.datetime.strptime('12:59 AM', "%I:%M %p")
+                        clock_out    = datetime.datetime.strptime('01:00 AM', "%I:%M %p")
                         clock_out    = clock_out + datetime.timedelta(days=1)
                     else:
                         a = punch_card[3].replace('.', ':')
@@ -157,7 +158,7 @@ async def lmchr(ctx, *args):
                     total_ot_salary += minutes_ot * (5000 / 60)                  
                     
             # Bandage Calculation
-            channel = bot.get_channel(1144826573141315685)
+            channel = bot.get_channel(bandage_channel)
             dynamic_vars = {}
             total_bandage = 0
             async for message in channel.history(limit=None, after=start_date, before=end_date):
@@ -184,15 +185,14 @@ async def lmchr(ctx, *args):
                                     
                         await message.add_reaction('✅')
                         
-            channel = bot.get_channel(target_channel_id)
+            channel = bot.get_channel(sent_to_channel)
             total = total_working_salary + total_ot_salary + (total_bandage * 100)
             if user != '' and position != '': 
                 await channel.send(f"```Name         : {name}\nDate         : {start_date2} - {end_date2}\nPosition     : {position}\nDaily Salary : RM {locale.format_string('%.2f', total_working_salary, True)}\nOver Time    : RM {locale.format_string('%.2f', total_ot_salary, True)}\nBandage Sale : RM {locale.format_string('%.2f', (total_bandage * 100), True)} ({total_bandage} Unit)\n\nTOTAL        : RM {locale.format_string('%.2f', total, True)}```")
             await ctx.message.delete()
+            await reply.delete()
         else :
-            await ctx.send("incomplete")
-    elif subcommand == 'bandage':
-        if len(args) >= 3:
+            await ctx.reply("Invalid format/query. Must include range of date for salary calculation. \nFormat: '/lmchr calculate_salary [Start Date] [End Date]'")
             start_date = (args[1] + ' 00:00:00') if args else None
             end_date   = (args[2] + ' 23:59:00') if args else None
             
@@ -228,7 +228,7 @@ async def lmchr(ctx, *args):
                                 
                     await message.add_reaction('✅')
     else:
-        await ctx.send("Invalid subcommand. Use '!lmchr function1' or '!lmchr function2'.")
+        await ctx.reply("Invalid subcommand. Use '/lmchr calculate_salary [Start Date] [End Date]'")
         
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
